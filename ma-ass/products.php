@@ -38,7 +38,7 @@
 </head>
 <body>
     <center>
-        <h3>Panneau de contrôle d'administration</h3>
+        <h3>Admin configuration Panel</h3>
     </center>
     <?php
     // Including the configuration file
@@ -56,9 +56,9 @@
                     <h5 class='card-title'>$row[name]</h5>
                     <p class='card-text'>$row[price]</p>
                     <!-- Link to delete product with product ID -->
-                    <a href='delete.php?id=$row[id]' class='btn btn-danger'>Supprimer le produit</a>
+                    <a href='delete.php?id=$row[id]' class='btn btn-danger'>Delete the product</a>
                     <!-- Link to update product with product ID -->
-                    <a href='update.php?id=$row[id]' class='btn btn-primary'>Modifier le produit</a>
+                    <a href='update.php?id=$row[id]' class='btn btn-primary'>Modify the product</a>
                 </div>
             </div>
         </main>

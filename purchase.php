@@ -57,7 +57,10 @@ require_once 'db.php';
     <input type="text" id="address" name="address" required>
     
     <label for="paymentmethod">payment Method:</label>
-    <input type="text" id="paymentmethod" name="paymentmethod">
+    <input type="radio" id="r1" name="paymentmethod" value="cash" checked>
+      <label for="r1">Cash</label>
+    <input type="radio" id="r2" name="paymentmethod" value="Credit Card">
+  	<label for="r2">Card</label>
   
 	<label for="number">Phone Number:</label>
     <input type="number" id="number" name="number" required>

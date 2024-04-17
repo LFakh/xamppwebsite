@@ -12,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Title of the page -->
-    <title>modifier le produit</title>
+    <title>modify the product</title>
     
     <!-- Linking external CSS file -->
     <link rel="stylesheet" href="index.css">
@@ -47,14 +47,14 @@
                 
                 <!-- File input for updating product image -->
                 <input type="file" id="file" name='image' style='display:none;'>
-                <label for="file"> Mettre à jour l'image du produit</label>
+                <label for="file"> Update product image</label>
                 
                 <!-- Button to submit the form for updating product -->
-                <button name='update' type='submit'>modifier le produit</button>
+                <button name='update' type='submit'>modify the product</button>
                 <br><br>
                 
                 <!-- Link to view all products -->
-                <a href="products.php">afficher tout les produits</a>
+                <a href="products.php">show all products</a>
             </form>
         </div>
         <!-- Developer's information -->

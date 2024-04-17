@@ -18,7 +18,7 @@ try {
     throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_to_fix'])) {
 		// tofix table data
     $machinename = $_POST["machinename"];
     $machentrydate = $_POST["machentrydate"];
@@ -34,9 +34,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $stmt = $pdo->prepare("INSERT INTO tofix (machinename, machentrydate, machexpexteddate, price, clientname, clientnumber, clientadress, panne, comments) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
     $stmt->execute([$machinename, $machentrydate, $machexpexteddate, $price,$clientname,$clientnumber,$clientadress,$panne, $comments]);
 }
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_market'])) {    
+	    	// market table data 
+	$machinebrand = $_POST["machinebrand"];
+    $purchasedate = $_POST["purchasedate"];
+    $purchaseprice = $_POST["purchaseprice"];
+    $priceplan = $_POST["priceplan"];
+    $sellerinfo = $_POST["sellerinfo"];
+    $comment = $_POST["comment"];
+	
+    // Insert the admin Market forum data into the database
+$stmt = $pdo->prepare("INSERT INTO market (machinebrand, purchasedate, purchaseprice, priceplan, sellerinfo, comment) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$machinebrand, $purchasedate, $purchaseprice, $priceplan,$sellerinfo, $comment]);
+        
+}
 
+    
 // Handling Edit Submissions
-if (isset($_POST['edited_comment']) && isset($_POST['id_to_edit'])) {
+if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['new_comment']) && isset($_POST['id_to_edit'])) {
     $editedComment = $_POST['edited_comment'];
     $idToEdit = $_POST['id_to_edit'];
 
@@ -45,7 +60,7 @@ if (isset($_POST['edited_comment']) && isset($_POST['id_to_edit'])) {
 }
 
 // Handling Delete Submissions
-if (isset($_POST['id_to_delete'])) {
+if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST['delete_action'])) {
     $idToDelete = $_POST['id_to_delete'];
 
     $stmt = $pdo->prepare("DELETE FROM tofix WHERE id = ?");
@@ -63,6 +78,10 @@ $rows_tofix = $stmt_tofix->fetchAll();
 // Fetch data from the purchase database
 $stmt_clients = $pdo->query('SELECT * FROM purchase'); 
 $rows_clients = $stmt_clients->fetchAll();
+
+// Fetch data from the market database
+$stmt_market = $pdo->query('SELECT * FROM market'); 
+$rows_market = $stmt_market->fetchAll();
 
 ?>
 
@@ -88,10 +107,10 @@ $rows_clients = $stmt_clients->fetchAll();
         }
         /* container requirements */
         .container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            display: flex; /* Use flexbox */
+            justify-content: space-between; /* Items are evenly distributed in the container */
+            align-items: flex-start; /* Items are aligned at the start of the cross axis */
+            margin-bottom: 20px; /* Add some margin between forms */
         }
         /* some nice arts because why not */
         .zbda {
@@ -143,7 +162,8 @@ $rows_clients = $stmt_clients->fetchAll();
             align-items: center;
         }
         
-        .button {
+        .button,
+        .btn input[type="submit"] {
             margin-top: 1px;
             padding: 10px 20px;
             background-color: red;
@@ -188,7 +208,26 @@ $rows_clients = $stmt_clients->fetchAll();
             <input type="text" id="clientadress" name="clientadress" required>
             <label for="comments">Comments:</label>
             <input type="text" id="comments" name="comments">
-            <input type="submit" value="Add Machine">
+            <input type="submit" name="submit_to_fix" value="Add Machine">
+        </form>
+    </div>
+
+    <div class="zbda">
+        <h2>Admin Market Forum</h2>
+        <form action="" method="post">
+            <label for="machinebrand">Machine Brand:</label>
+            <input type="text" id="machinebrand" name="machinebrand" required>
+            <label for="purchasedate"> Date of Purchase:</label>
+            <input type="date" id="purchasedate" name="purchasedate" required>
+            <label for="purchaseprice">Purchase Price:</label>
+            <input type="number" id="purchaseprice" name="purchaseprice" required>
+            <label for="priceplan">Selling Price Plan:</label>
+            <input type="number" id="priceplan" name="priceplan" required>
+            <label for="sellerinfo">Seller info:</label>
+            <input type="text" id="sellerinfo" name="sellerinfo" required>
+            <label for="comment">Comments:</label>
+            <input type="text" id="comment" name="comment">
+            <input type="submit" name="submit_market" value="Add Machine">
         </form>
     </div>
 </div>
@@ -229,6 +268,8 @@ $rows_clients = $stmt_clients->fetchAll();
         <th>Client Adress</th>
         <th>Panne</th>
         <th>Comments</th>
+        <th>to edit</th>
+        <th>to delete</th>
     </tr>
     <?php foreach ($rows_tofix as $row) : ?>
     <tr>
@@ -242,7 +283,23 @@ $rows_clients = $stmt_clients->fetchAll();
         <td><?php echo $row['clientadress']; ?></td>
         <td><?php echo $row['panne']; ?></td>
         <td><?php echo $row['comments']; ?></td>
+        <td>
+    <form action="" method="post">
+        <input type="hidden" name="id_to_edit" value="<?php echo $row['id']; ?>">
+        <input type="hidden" name="edited_comment" value="<?php echo $row['comments']; ?>">
+        <input type="text" name="edited_comment" placeholder="Enter edited comment">
+        <div class="btn">
+        <input type="submit" name="new_comment" value="Submit Edit">
+        </div>
     </form>
+</td>
+<td>
+	<div class="btn">
+    <form action="" method="post" onsubmit="return confirm('Are you sure you want to delete this row?');">
+    <input type="hidden" name="id_to_delete" value="<?php echo $row['id']; ?>">
+    <input type="submit" name="delete_action" value="Delete">
+    </div>
+</form>
 </td>
     </tr>
     <?php endforeach; ?>
@@ -252,7 +309,7 @@ $rows_clients = $stmt_clients->fetchAll();
 <table>
     <tr>
         <th>Client Name</th>
-        <th>Adress</th>
+        <th>Address</th>
         <th>Items Bought</th>
         <th>Phone Number</th>
         <th>Payment Method</th>
@@ -260,12 +317,35 @@ $rows_clients = $stmt_clients->fetchAll();
     <?php foreach ($rows_clients as $row) : ?>
     <tr>
         <td><?php echo $row['name']; ?></td>
-        <td><?php echo $row['adress']; ?></td>
+        <td><?php echo $row['address']; ?></td>
         <td><?php echo $row['items']; ?></td>
         <td><?php echo $row['number']; ?></td>
-        <td><?php echo $row['pymentmethod']; ?></td>
+        <td><?php echo $row['paymentmethod']; ?></td>
     </tr>
     <?php endforeach; ?>
 </table>
+
+<h2>Market Bought Machines</h2>
+<table>
+    <tr>
+        <th>Machine Brand</th>
+        <th>Purchase Date</th>
+        <th>Purchase Price</th>
+        <th>Price Plan</th>
+        <th>Seller Info</th>
+        <th>Comment</th>
+    </tr>
+    <?php foreach ($rows_market as $row) : ?>
+    <tr>
+        <td><?php echo $row['machinebrand']; ?></td>
+        <td><?php echo $row['purchasedate']; ?></td>
+        <td><?php echo $row['purchaseprice']; ?></td>
+        <td><?php echo $row['priceplan']; ?></td>
+        <td><?php echo $row['sellerinfo']; ?></td>
+        <td><?php echo $row['comment']; ?></td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+
 </body>
 </html>

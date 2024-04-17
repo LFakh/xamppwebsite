@@ -199,37 +199,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <p class="note">Thank you for making an account please click on the item that you wish to buy so it be added to the cart. <!--?php echo $username; ?--></p>
     </div>
     <div class="container">
-        <div class="image-container" data-item="Laptop">
+        <div class="image-container" data-item="Laptop" data-price="1500">
             <img src="https://i.ibb.co/yqJLmNQ/img-11.png" alt="Laptop">
-            <p>Laptop</p>	
+            <p>Laptop -1500$</p>	
         </div>
-        <div class="image-container" data-item="Keyboard">
+        <div class="image-container" data-item="Keyboard" data-price="50">
             <img src="https://i.ibb.co/9wq0zRY/img-05.png" alt="Keyboard">
-            <p>Keyboard</p>
+            <p>Keyboard -50$</p>
         </div>
-        <div class="image-container" data-item="Monitor">
+        <div class="image-container" data-item="Monitor" data-price="150">
             <img src="https://i.ibb.co/MnCqnTB/img-07.png" alt="Monitor">
-            <p>Monitor</p>
+            <p>Monitor -150$</p>
         </div>
-        <div class="image-container" data-item="Mouse">
+        <div class="image-container" data-item="Mouse" data-price="100">
             <img src="https://i.ibb.co/Dfxg1pB/img-06.png" alt="Mouse">
-            <p>Mouse</p>
+            <p>Mouse -100$</p>
         </div>
-        <div class="image-container" data-item="Case">
+        <div class="image-container" data-item="Case" data-price="90">
             <img src="https://i.ibb.co/HDhN6M5/img-04.png" alt="Case">
-            <p>Case</p>
+            <p>Case -90$</p>
         </div>
-        <div class="image-container" data-item="Notebook">
+        <div class="image-container" data-item="Notebook" data-price="200">
             <img src="https://i.ibb.co/d5zn25B/img-08.png" alt="Notebook">
-            <p>Notebook</p>
+            <p>Notebook -200$</p>
         </div>
-        <div class="image-container" data-item="Alienware">
+        <div class="image-container" data-item="Alienware" data-price="3500">
             <img src="https://dl.dropbox.com/scl/fi/8qz86e01abaoedd87xovo/187-1876762_weve-already-seen-alienwares-new-area-51-gaming.png?rlkey=na8m7oqlaozlsfx54b3miu3o4" alt="Alienware">
-            <p>Alienware Full Set</p>
+            <p>Alienware Full Set -3500$</p>
         </div>
-        <div class="image-container" data-item="Pc">
+        <div class="image-container" data-item="Pc" data-price="3000">
             <img src="https://dl.dropbox.com/scl/fi/bnkjvf7i9yskee2vxgc5l/downloadfile.jpg?rlkey=m40pnm222h6kctbjad5s23z3k" alt="Pc">
-            <p>Desktop PC Central Unit</p>
+            <p>Desktop PC Central Unit -3000$</p>
         </div>
     </div>
 
@@ -274,12 +274,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     const confirmationNoBtn = document.getElementById('confirmation-no');
 
     let cartItems = []; // Array to store the items added to the cart
-
+	let cartTotal = 0; // Initialize cart total
     // Add click event listener to all image containers
     const imageContainers = document.querySelectorAll('.image-container');
     imageContainers.forEach(container => {
         container.addEventListener('click', () => {
             const item = container.getAttribute('data-item');
+            const price = container.getAttribute('data-price');
             addToCart(item); // Add item to cart
             incrementCart(); // Increment cart icon number
         });
@@ -322,12 +323,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Function to add item to cart
     function addToCart(item) {
         cartItems.push(item); // Add the item to the cartItems array
+        cartTotal += price;
     }
+
+	// Function to update the cart total display
+function updateCartTotal() {
+    cartIcon.textContent = `$${cartTotal}`;  // Update the text content of the cart icon
+}
 
     // Function to show confirmation popup
     function showConfirmationPopup() {
         const popupContent = confirmationPopup.querySelector('.popup-content p');
-        popupContent.innerHTML = `Are you sure you want to purchase: ${cartItems.join(", ")}?`; // List all items in popup
+   popupContent.innerHTML = `Are you sure you want to purchase: ${cartItems.join(", ")}? Total Price is = $${cartTotal}`; // List all items in popup
         confirmationPopup.style.display = 'block'; // Show popup
     }
 
@@ -345,6 +352,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     function resetCart() {
         cartItems = []; // Clear the cartItems array
         cartIcon.innerText = '0'; // Reset cart icon number
+        cartTotal = 0;  // Reset the total to 0
+    updateCartTotal(); // Update the display
+     hidePopup(confirmationPopup);
     }
 </script>
 

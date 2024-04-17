@@ -61,15 +61,15 @@ if(isset($message)){
 <div class="form-container">
 
    <form action="" method="post">
-      <h3> Créer un compte </h3>
+      <h3> Create an account </h3>
       <!-- Input fields for user registration -->
-      <input type="text" name="name" required placeholder="Nom d'utilisateur" class="box">
+      <input type="text" name="name" required placeholder="username" class="box">
       <input type="email" name="email" required placeholder="Email " class="box">
-      <input type="password" name="password" required placeholder="Mot de passe" class="box">
-      <input type="password" name="cpassword" required placeholder="Confirmation du mot de passe" class="box">
+      <input type="password" name="password" required placeholder="password" class="box">
+      <input type="password" name="cpassword" required placeholder="Confirm password" class="box">
       <input type="submit" name="submit" class="btn" value="Créer un compte">
       <!-- Link to login page -->
-      <p>Vous n'avez pas encore de compte ?<a href="login.php"> Se connecter </a></p>
+      <p>No account yet?<a href="login.php"> Connect </a></p>
    </form>
 
 </div>
